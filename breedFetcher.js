@@ -1,16 +1,19 @@
 const request = require("request");
 
-
-  let breed = process.argv[2];
+const fetchBreedDescription = function(breed, callback) {   //The first (error) parameter will allow the caller to check and handle error situations easily.
   let url = `https://api.thecatapi.com/v1/breeds/search?name=${breed}`;
   request(url, (error, response, body) => {
-    if (!error && response === 200) {   
-      console.log('error:', error);
-    }
-    if(!`${breed}`){
-      console.log('error:', error);
-      console.log('please enter valid kitty type!');
+    if(error){
+      callback(error, null);
     }
     const data = JSON.parse(body);
-    console.log(data[0].description);
+    if(data.length === 0){
+    callback(`Please enter a valid kitty name :)`, null);
+    }else{
+    callback(null, data[0].description);
+    }
   });
+};
+
+
+module.exports = { fetchBreedDescription };
